@@ -63,7 +63,7 @@ SA_AlertZimlet.prototype.onMsgView = function (msg, oldMsg, view) {
 
       if((msg.attrs['X-Spam-Status'].indexOf('URI_PHISH') > 0) || (msg.attrs['X-Spam-Status'].indexOf('FREEMAIL_FORGED_REPLYTO') > 0))
       {
-         SA_AlertZimlet.prototype._dialog = new ZmDialog( { title:'Phising alert', parent:this.getShell(), standardButtons:[DwtDialog.OK_BUTTON], disposeOnPopDown:true } );
+         SA_AlertZimlet.prototype._dialog = new ZmDialog( { title:'Phishing alert', parent:this.getShell(), standardButtons:[DwtDialog.OK_BUTTON], disposeOnPopDown:true } );
          var alertmailTxt = "";
          if((alertmail) && (alertedIds.indexOf(","+msg.id))<0)
          {
