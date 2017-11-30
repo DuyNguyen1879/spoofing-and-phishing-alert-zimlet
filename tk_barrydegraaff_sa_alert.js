@@ -47,14 +47,26 @@ function() {
 SA_AlertZimlet.prototype._applyRequestHeaders =
 function() {	
 	ZmMailMsg.requestHeaders["X-Spam-Status"] = "X-Spam-Status";
+   ZmMailMsg.requestHeaders["Reply-To"] = "Reply-To";
+};
+
+SA_AlertZimlet.prototype.convert = function(input) {
+  var output = "";
+  output.value = "";
+  for (var i = 0; i < input.length; i++) {
+      output += input[i].charCodeAt(0) + " ";
+  }
+  return output;
 };
 
 SA_AlertZimlet.prototype.onMsgView = function (msg, oldMsg, view) {  
    try
    {
       var zimletInstance = appCtxt._zimletMgr.getZimletByName('tk_barrydegraaff_sa_alert').handlerObject;   
-      var alertmail = zimletInstance._zimletContext.getConfig("alertmail");   
-   
+      var alertmail = zimletInstance._zimletContext.getConfig("alertmail"); 
+      var ignorelist = zimletInstance._zimletContext.getConfig("ignorelist");
+      ignorelist = ignorelist.split(";");
+
       var alertedIds = zimletInstance.getUserProperty("alertedIds");
       if(!alertedIds)
       {
@@ -63,7 +75,20 @@ SA_AlertZimlet.prototype.onMsgView = function (msg, oldMsg, view) {
 
       if((msg.attrs['X-Spam-Status'].indexOf('URI_PHISH') > 0) || (msg.attrs['X-Spam-Status'].indexOf('FREEMAIL_FORGED_REPLYTO') > 0))
       {
-         SA_AlertZimlet.prototype._dialog = new ZmDialog( { title:'Phishing alert', parent:this.getShell(), standardButtons:[DwtDialog.OK_BUTTON], disposeOnPopDown:true } );
+         var ignoreThis = false;
+         ignorelist.forEach(function(ignore) {
+            if((msg.attrs['Reply-To'].indexOf(ignore) > -1) && (ignore.length > 0))
+            {
+               ignoreThis = true;
+            }   
+         });
+         
+         if(ignoreThis)
+         {
+            return;
+         }
+         
+         SA_AlertZimlet.prototype._dialog = new ZmDialog( { title:'Phising alert', parent:this.getShell(), standardButtons:[DwtDialog.OK_BUTTON], disposeOnPopDown:true } );
          var alertmailTxt = "";
          if((alertmail) && (alertedIds.indexOf(","+msg.id))<0)
          {
