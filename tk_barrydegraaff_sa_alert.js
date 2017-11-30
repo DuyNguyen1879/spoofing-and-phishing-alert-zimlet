@@ -50,15 +50,6 @@ function() {
    ZmMailMsg.requestHeaders["Reply-To"] = "Reply-To";
 };
 
-SA_AlertZimlet.prototype.convert = function(input) {
-  var output = "";
-  output.value = "";
-  for (var i = 0; i < input.length; i++) {
-      output += input[i].charCodeAt(0) + " ";
-  }
-  return output;
-};
-
 SA_AlertZimlet.prototype.onMsgView = function (msg, oldMsg, view) {  
    try
    {
