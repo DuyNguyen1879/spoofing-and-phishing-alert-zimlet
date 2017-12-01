@@ -2,6 +2,7 @@
 <zimletConfig name="tk_barrydegraaff_sa_alert" version="1.0">
     <global>
         <property name="alertmail"></property>
-        <property name="ignorelist"></property>
+        <property name="ignorelistReplyTo"></property>
+        <property name="ignorelistReturnPath">@email.wetransfer.com</property>
     </global>
 </zimletConfig>

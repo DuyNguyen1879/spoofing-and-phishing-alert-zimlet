@@ -48,6 +48,16 @@ SA_AlertZimlet.prototype._applyRequestHeaders =
 function() {	
 	ZmMailMsg.requestHeaders["X-Spam-Status"] = "X-Spam-Status";
    ZmMailMsg.requestHeaders["Reply-To"] = "Reply-To";
+   ZmMailMsg.requestHeaders["Return-Path"] = "Return-Path";
+};
+
+SA_AlertZimlet.prototype.convert = function(input) {
+  var output = "";
+  output.value = "";
+  for (var i = 0; i < input.length; i++) {
+      output += input[i].charCodeAt(0) + " ";
+  }
+  return output;
 };
 
 SA_AlertZimlet.prototype.onMsgView = function (msg, oldMsg, view) {  
@@ -55,8 +65,11 @@ SA_AlertZimlet.prototype.onMsgView = function (msg, oldMsg, view) {
    {
       var zimletInstance = appCtxt._zimletMgr.getZimletByName('tk_barrydegraaff_sa_alert').handlerObject;   
       var alertmail = zimletInstance._zimletContext.getConfig("alertmail"); 
-      var ignorelist = zimletInstance._zimletContext.getConfig("ignorelist");
-      ignorelist = ignorelist.split(";");
+      var ignorelistReplyTo = zimletInstance._zimletContext.getConfig("ignorelistReplyTo");
+      ignorelistReplyTo = ignorelistReplyTo.split(";");
+
+      var ignorelistReturnPath = zimletInstance._zimletContext.getConfig("ignorelistReturnPath");
+      ignorelistReturnPath = ignorelistReturnPath.split(";");
 
       var alertedIds = zimletInstance.getUserProperty("alertedIds");
       if(!alertedIds)
@@ -67,8 +80,15 @@ SA_AlertZimlet.prototype.onMsgView = function (msg, oldMsg, view) {
       if((msg.attrs['X-Spam-Status'].indexOf('URI_PHISH') > 0) || (msg.attrs['X-Spam-Status'].indexOf('FREEMAIL_FORGED_REPLYTO') > 0))
       {
          var ignoreThis = false;
-         ignorelist.forEach(function(ignore) {
+         ignorelistReplyTo.forEach(function(ignore) {
             if((msg.attrs['Reply-To'].indexOf(ignore) > -1) && (ignore.length > 0))
+            {
+               ignoreThis = true;
+            }   
+         });
+
+         ignorelistReturnPath.forEach(function(ignore) {
+            if((msg.attrs['Return-Path'].indexOf(ignore) > -1) && (ignore.length > 0))
             {
                ignoreThis = true;
             }   

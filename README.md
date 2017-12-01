@@ -5,7 +5,10 @@ This zimlet checks for X-Spam-Status message header and alerts the user when cer
 You can have your users automatically submit suspicious mail to your helpdesk staff by configuring the `alertmail` property in config_template.xml.
 
 # Ignore trusted reply-to's
-You can set trusted reply-to's by adding a semi-colon separated list in `ignorelist`
+You can set trusted reply-to's by adding a semi-colon separated list in `ignorelistReplyTo`
+
+# Ignore trusted return-path's
+You can set trusted reply-to's by adding a semi-colon separated list in `ignorelistReturnPath`
 
 # Help us improve!
 Please help us and add more Spam Assassin tags to this Zimlet, just open a Github issue 
