@@ -124,7 +124,7 @@ SA_AlertZimlet.prototype.onMsgView = function (msg, oldMsg, view) {
             return;
          }
          
-         SA_AlertZimlet.prototype._dialog = new ZmDialog( { title:'Spoofing and Phising alert', parent:this.getShell(), standardButtons:[DwtDialog.OK_BUTTON], disposeOnPopDown:true } );
+         SA_AlertZimlet.prototype._dialog = new ZmDialog( { title:'Spoofing and Phishing alert', parent:this.getShell(), standardButtons:[DwtDialog.OK_BUTTON], disposeOnPopDown:true } );
          var alertmailTxt = "";
          if((alertmail) && (alertedIds.indexOf(","+msg.id))<0)
          {
