@@ -1,4 +1,4 @@
-Spoof Alert Zimlet
+Spoofing and Phishing Alert Zimlet
 ==========
 If you find Spoof Alert Zimlet useful and want to support its continued development, you can make donations via:
 - PayPal: info@barrydegraaff.tk
