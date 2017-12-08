@@ -4,7 +4,7 @@ If you find Spoof Alert Zimlet useful and want to support its continued developm
 - PayPal: info@barrydegraaff.tk
 - Bank transfer: IBAN NL55ABNA0623226413 ; BIC ABNANL2A
 
-This Zimlet can be used to help users to identify spoofing and thus offer protection against it. While some parts of this Zimlet work automatic, it is recommended you deploy it with a knowledgable helpdesk to back it up.
+This Zimlet can be used to help users to identify spoofing and thus offer protection against it. While some parts of this Zimlet work automatic, it is recommended you deploy it with a knowledgeable helpdesk to back it up.
 
 This zimlet checks the result from Spam Assassin and alerts the user when certain tags are found. In addition it enforces the zimbraPrefShortEmailAddress setting to be FALSE as that allows the user to see the used email FROM address. The Zimlet also checks for suspicious characters in headers, like the NULL character etc. 
 
