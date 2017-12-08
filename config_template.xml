@@ -3,6 +3,6 @@
     <global>
         <property name="alertmail"></property>
         <property name="ignorelistReplyTo"></property>
-        <property name="ignorelistReturnPath">@email.wetransfer.com</property>
+        <property name="ignorelistReturnPath">@email.wetransfer.com;@email.dropbox.com</property>
     </global>
 </zimletConfig>
