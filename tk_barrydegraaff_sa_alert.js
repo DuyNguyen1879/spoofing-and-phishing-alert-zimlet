@@ -38,6 +38,28 @@ var SA_AlertZimlet = tk_barrydegraaff_sa_alert_HandlerObject;
 SA_AlertZimlet.prototype.init =
 function() {
    AjxPackage.require({name:"MailCore", callback:new AjxCallback(this, this._applyRequestHeaders)});
+
+   //mailsploit
+   try {
+      if(appCtxt.getSettings().getSetting('SHORT_ADDRESS').value == true)
+      {
+         var soapDoc = AjxSoapDoc.create("ModifyPrefsRequest", "urn:zimbraAccount");
+         var zimbraPrefShortEmailAddressNode;
+   
+         zimbraPrefShortEmailAddressNode = soapDoc.set("pref", "FALSE");
+         zimbraPrefShortEmailAddressNode.setAttribute("name", "zimbraPrefShortEmailAddress");
+            
+         appCtxt.getAppController().sendRequest({
+            soapDoc: soapDoc,
+            asyncMode: true
+         });
+         console.log('Sa-Alert-Zimlet: Altered setting zimbraPrefShortEmailAddress, works from next reload of the browser');
+      }
+   } 
+   catch (err) 
+   {
+      console.log('Sa-Alert-Zimlet: Altered setting zimbraPrefShortEmailAddress FAILED' + err);
+   }
 };
 
 /**
@@ -49,6 +71,7 @@ function() {
 	ZmMailMsg.requestHeaders["X-Spam-Status"] = "X-Spam-Status";
    ZmMailMsg.requestHeaders["Reply-To"] = "Reply-To";
    ZmMailMsg.requestHeaders["Return-Path"] = "Return-Path";
+   ZmMailMsg.requestHeaders["From"] = "From";
 };
 
 SA_AlertZimlet.prototype.convert = function(input) {
@@ -77,7 +100,9 @@ SA_AlertZimlet.prototype.onMsgView = function (msg, oldMsg, view) {
          alertedIds = "";
       }
 
-      if((msg.attrs['X-Spam-Status'].indexOf('URI_PHISH') > 0) || (msg.attrs['X-Spam-Status'].indexOf('FREEMAIL_FORGED_REPLYTO') > 0))
+      if((msg.attrs['X-Spam-Status'].indexOf('URI_PHISH') > 0) || (msg.attrs['X-Spam-Status'].indexOf('FREEMAIL_FORGED_REPLYTO') > 0) ||
+      (msg.attrs['From'].indexOf('=0D') > -1) || (msg.attrs['From'].indexOf('=0A') > -1) || ((msg.attrs['From'].indexOf('=00') > -1)) //mailsploit
+      )
       {
          var ignoreThis = false;
          ignorelistReplyTo.forEach(function(ignore) {
@@ -197,4 +222,16 @@ SA_AlertZimlet.prototype.notifyAttach = function (id) {
       }      
       req.send(xmlHttp.responseText);
    }
+};
+
+/* This is here for debugging string at binary level
+ * 
+ * */
+SA_AlertZimlet.prototype.convert = function(input) {
+   var output = "";
+   output.value = "";
+   for (var i = 0; i < input.length; i++) {
+      output += input[i].charCodeAt(0) + " ";
+   }
+   return output;
 };
