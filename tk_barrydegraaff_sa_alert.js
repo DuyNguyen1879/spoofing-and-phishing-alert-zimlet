@@ -124,13 +124,13 @@ SA_AlertZimlet.prototype.onMsgView = function (msg, oldMsg, view) {
             return;
          }
          
-         SA_AlertZimlet.prototype._dialog = new ZmDialog( { title:'Phising alert', parent:this.getShell(), standardButtons:[DwtDialog.OK_BUTTON], disposeOnPopDown:true } );
+         SA_AlertZimlet.prototype._dialog = new ZmDialog( { title:'Spoofing and Phising alert', parent:this.getShell(), standardButtons:[DwtDialog.OK_BUTTON], disposeOnPopDown:true } );
          var alertmailTxt = "";
          if((alertmail) && (alertedIds.indexOf(","+msg.id))<0)
          {
             alertmailTxt = "The message is automatically forwarded to: " + alertmail;
          }
-         SA_AlertZimlet.prototype._dialog.setContent('<b>Based on the headers of this email, there is a chance this is a phishing mail.<br>Do not click on any links in the mail and do not respond and foward it.</b><br><br>Please mark the message as spam.<br>' + alertmailTxt);
+         SA_AlertZimlet.prototype._dialog.setContent('<b>Based on the headers of this email, there is a chance this is a phishing or spoofed mail.<br>Do not click on any links in the mail and do not respond and foward it.</b><br><br>Please mark the message as spam.<br>' + alertmailTxt);
          SA_AlertZimlet.prototype._dialog.popup();
          if((alertmail) && (alertedIds.indexOf(","+msg.id))<0)
          {
