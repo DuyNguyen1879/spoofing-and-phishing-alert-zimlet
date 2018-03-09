@@ -10,6 +10,9 @@ This zimlet checks the result from Spam Assassin and alerts the user when certai
 
 I deployed the Zimlet in an organisation with 700 users, and pointed the `alertmail` property to the helpdesk ticket system, after a few weeks of increased tickets and configuring the `ignorelistReplyTo` and `ignorelistReturnPath` the number of false positives dropped, and now the alert is really valuable to the user.
 
+# Mailsploit patches
+This zimlet contains patches for Mailsploit and sets zimbraPrefShortEmailAddress to false (applied after reload).
+
 # Recommended security setting
 This will help users to identify spoofed emails, this setting is also enforced per user when you enable this zimlet.
 For the default COS (remeber to set it for all your COS'es):
