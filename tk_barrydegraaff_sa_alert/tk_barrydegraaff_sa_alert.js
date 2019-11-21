@@ -142,7 +142,17 @@ SA_AlertZimlet.prototype.onMsgView = function (msg, oldMsg, view) {
          {
             alertmailTxt = "The message is automatically forwarded to: " + alertmail;
          }
-         SA_AlertZimlet.prototype._dialog.setContent('<b>Based on the headers of this email, there is a chance this is a phishing or spoofed mail.<br>Do not click on any links in the mail, do not download or open any attachments, and do not respond and forward it.</b><br><br>Please mark the message as spam.<br>' + alertmailTxt);
+         SA_AlertZimlet.prototype._dialog.setContent(
+         '<b>' +
+         'Based on the headers of this email, there is a chance this is a phishing or spoofed mail.' + '<br>' +
+         '<ul>' +
+         '<li>' + 'Do not click on any links in the mail' + '</li>' +
+         '<li>' + 'Do not download any attachments' + '</li>' +
+         '<li>' + 'Do not open any attachments' + '</li>' +
+         '<li>' + 'Do not reply to this email' + '</li>' +
+         '<li>' + 'Do not forward this email' + '</li>' +
+         '</ul>' +
+         '</b>' + '</b><br><br>Please mark the message as spam.<br>' + alertmailTxt);
          SA_AlertZimlet.prototype._dialog.popup();
          if((alertmail) && (alertedIds.indexOf(","+msg.id))<0)
          {
