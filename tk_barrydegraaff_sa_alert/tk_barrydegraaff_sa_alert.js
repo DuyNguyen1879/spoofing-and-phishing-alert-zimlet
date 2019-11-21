@@ -95,7 +95,10 @@ SA_AlertZimlet.prototype.onMsgView = function (msg, oldMsg, view) {
       }
 
       var ignorelistReturnPath = zimletInstance._zimletContext.getConfig("ignorelistReturnPath");
-      ignorelistReturnPath = ignorelistReturnPath.split(";");
+      if (!(!ignorelistReturnPath || ignorelistReturnPath.length === 0))
+      {
+         ignorelistReturnPath = ignorelistReturnPath.split(";");
+      }
 
       var alertedIds = zimletInstance.getUserProperty("alertedIds");
       if(!alertedIds)
@@ -118,12 +121,15 @@ SA_AlertZimlet.prototype.onMsgView = function (msg, oldMsg, view) {
             });
          }
 
-         ignorelistReturnPath.forEach(function(ignore) {
-            if((msg.attrs['Return-Path'].indexOf(ignore) > -1) && (ignore.length > 0))
-            {
-               ignoreThis = true;
-            }   
-         });
+         if (!(!ignorelistReturnPath || ignorelistReturnPath.length === 0))
+         {
+            ignorelistReturnPath.forEach(function(ignore) {
+                if((msg.attrs['Return-Path'].indexOf(ignore) > -1) && (ignore.length > 0))
+                {
+                ignoreThis = true;
+                }
+            });
+         }
          
          if(ignoreThis)
          {
