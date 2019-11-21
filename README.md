@@ -10,6 +10,23 @@ This zimlet checks the result from Spam Assassin and alerts the user when certai
 
 I deployed the Zimlet in an organisation with 700 users, and pointed the `alertmail` property to the helpdesk ticket system, after a few weeks of increased tickets and configuring the `ignorelistReplyTo` and `ignorelistReturnPath` the number of false positives dropped, and now the alert is really valuable to the user.
 
+# Installing Spoofing and Phishing Alert Zimlet
+The recommended method is to deploy using git.
+
+```
+# apt-get -y install git
+# git clone https://github.com/btactic/spoofing-and-phishing-alert-zimlet.git
+# cd spoofing-and-phishing-alert-zimlet
+# chmod +rx build.sh
+# ./build.sh
+```
+
+Now we can deploy the generated tk_barrydegraaff_sa.zip as any other zimlet.
+
+Otherwise you can fetch an already built zip file from our [spoofing-and-phishing-alert-zimlet releases](https://github.com/btactic/spoofing-and-phishing-alert-zimlet/releases).
+
+Please check the *Do a learning period* section below too for a development deploy mode.
+
 # Mailsploit patches
 This zimlet contains patches for Mailsploit and sets zimbraPrefShortEmailAddress to false (applied after reload).
 
