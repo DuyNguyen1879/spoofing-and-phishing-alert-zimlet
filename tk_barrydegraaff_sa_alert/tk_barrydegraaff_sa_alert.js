@@ -141,23 +141,23 @@ SA_AlertZimlet.prototype.onMsgView = function (msg, oldMsg, view) {
             return;
          }
 
-         SA_AlertZimlet.prototype._dialog = new ZmDialog( { title:'Spoofing and Phishing alert', parent:this.getShell(), standardButtons:[DwtDialog.OK_BUTTON], disposeOnPopDown:true } );
+         SA_AlertZimlet.prototype._dialog = new ZmDialog( { title:this.getMessage("saAlert_popup_title"), parent:this.getShell(), standardButtons:[DwtDialog.OK_BUTTON], disposeOnPopDown:true } );
          var alertmailTxt = "";
          if((alertmail) && (alertedIds.indexOf(","+msg.id))<0)
          {
-            alertmailTxt = "The message is automatically forwarded to: " + alertmail;
+            alertmailTxt = this.getMessage("saAlert_message_forwarded_to") + " " + alertmail;
          }
          SA_AlertZimlet.prototype._dialog.setContent(
          '<b>' +
-         'Based on the headers of this email, there is a chance this is a phishing or spoofed mail.' + '<br>' +
+         this.getMessage("saAlert_phishing_chance") + '<br>' +
          '<ul>' +
-         '<li>' + 'Do not click on any links in the mail' + '</li>' +
-         '<li>' + 'Do not download any attachments' + '</li>' +
-         '<li>' + 'Do not open any attachments' + '</li>' +
-         '<li>' + 'Do not reply to this email' + '</li>' +
-         '<li>' + 'Do not forward this email' + '</li>' +
+         '<li>' + this.getMessage("saAlert_not_links") + '</li>' +
+         '<li>' + this.getMessage("saAlert_not_download") + '</li>' +
+         '<li>' + this.getMessage("saAlert_not_open") + '</li>' +
+         '<li>' + this.getMessage("saAlert_not_reply") + '</li>' +
+         '<li>' + this.getMessage("saAlert_not_forward") + '</li>' +
          '</ul>' +
-         '</b>' + '</b><br><br>Please mark the message as spam.<br>' + alertmailTxt);
+         '</b>' + '</b><br><br> '+this.getMessage("saAlert_mark_as_spam")+'.<br>' + alertmailTxt);
          SA_AlertZimlet.prototype._dialog.popup();
          if((alertmail) && (alertedIds.indexOf(","+msg.id))<0)
          {
