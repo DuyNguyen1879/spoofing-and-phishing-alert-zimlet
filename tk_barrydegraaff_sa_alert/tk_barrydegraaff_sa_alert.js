@@ -45,17 +45,17 @@ function() {
       {
          var soapDoc = AjxSoapDoc.create("ModifyPrefsRequest", "urn:zimbraAccount");
          var zimbraPrefShortEmailAddressNode;
-   
+
          zimbraPrefShortEmailAddressNode = soapDoc.set("pref", "FALSE");
          zimbraPrefShortEmailAddressNode.setAttribute("name", "zimbraPrefShortEmailAddress");
-            
+
          appCtxt.getAppController().sendRequest({
             soapDoc: soapDoc,
             asyncMode: true
          });
          console.log('Sa-Alert-Zimlet: Altered setting zimbraPrefShortEmailAddress, works from next reload of the browser');
       }
-   } 
+   }
    catch (err) 
    {
       console.log('Sa-Alert-Zimlet: Altered setting zimbraPrefShortEmailAddress FAILED' + err);
@@ -83,7 +83,7 @@ SA_AlertZimlet.prototype.convert = function(input) {
   return output;
 };
 
-SA_AlertZimlet.prototype.onMsgView = function (msg, oldMsg, view) {  
+SA_AlertZimlet.prototype.onMsgView = function (msg, oldMsg, view) {
    try
    {
       var zimletInstance = appCtxt._zimletMgr.getZimletByName('tk_barrydegraaff_sa_alert').handlerObject;   
@@ -130,12 +130,12 @@ SA_AlertZimlet.prototype.onMsgView = function (msg, oldMsg, view) {
                 }
             });
          }
-         
+
          if(ignoreThis)
          {
             return;
          }
-         
+
          SA_AlertZimlet.prototype._dialog = new ZmDialog( { title:'Spoofing and Phishing alert', parent:this.getShell(), standardButtons:[DwtDialog.OK_BUTTON], disposeOnPopDown:true } );
          var alertmailTxt = "";
          if((alertmail) && (alertedIds.indexOf(","+msg.id))<0)
@@ -147,22 +147,22 @@ SA_AlertZimlet.prototype.onMsgView = function (msg, oldMsg, view) {
          if((alertmail) && (alertedIds.indexOf(","+msg.id))<0)
          {
             SA_AlertZimlet.prototype.notifyAttach(msg.id);
-            alertedIds[msg.id] = msg.id;   
+            alertedIds[msg.id] = msg.id;
             zimletInstance.setUserProperty("alertedIds", alertedIds +","+msg.id, true);
          }
       }
    } catch (err)
    {
-     // X-Spam-Status header not found  
+     // X-Spam-Status header not found
    }
-};   
+};
 
 /** Send this message to the configured helpdesk for analysis
  * */
-SA_AlertZimlet.prototype.notifyAttach = function (id) { 
+SA_AlertZimlet.prototype.notifyAttach = function (id) {
    var zimletInstance = appCtxt._zimletMgr.getZimletByName('tk_barrydegraaff_sa_alert').handlerObject;
    var alertmail = zimletInstance._zimletContext.getConfig("alertmail");
-   
+
    if(alertmail)
    {
       var url = [];
@@ -181,27 +181,27 @@ SA_AlertZimlet.prototype.notifyAttach = function (id) {
       url[i++]= AjxStringUtil.urlComponentEncode(appCtxt.getActiveAccount().name);
       url[i++] = "/message.txt?fmt=txt"+"&id=";
       url[i++] = id;
-      
-      var getUrl = url.join(""); 
-      
+
+      var getUrl = url.join("");
+
       //Now make an ajax request and read the contents of this mail, including all attachments as text
       //it should be base64 encoded
-      var xmlHttp = null;   
+      var xmlHttp = null;
       xmlHttp = new XMLHttpRequest();
       xmlHttp.open( "GET", getUrl, false );
       xmlHttp.send( null );
-   
-      //Check for duplicate filename   
+
+      //Check for duplicate filename
       var composeView = appCtxt.getCurrentView();
-      
+
       req = new XMLHttpRequest();
-      req.open("POST", "/service/upload?fmt=extended,raw", true);        
+      req.open("POST", "/service/upload?fmt=extended,raw", true);
       req.setRequestHeader("Cache-Control", "no-cache");
       req.setRequestHeader("X-Requested-With", "XMLHttpRequest");
       req.setRequestHeader("Content-Type",  "text/plain" + ";");
       req.setRequestHeader("X-Zimbra-Csrf-Token", window.csrfToken);
       req.setRequestHeader("Content-Disposition", 'attachment; filename="message.eml"');
-   
+
       var myWindow = this;
       myWindow.idsToAttach = [];
       req.onload = function(e)
@@ -209,17 +209,17 @@ SA_AlertZimlet.prototype.notifyAttach = function (id) {
          var resp = eval("["+req.responseText+"]");
          var respObj = resp[2];
          var attId = "";
-         for (var i = 0; i < respObj.length; i++) 
+         for (var i = 0; i < respObj.length; i++)
          {
             if(respObj[i].aid != "undefined") {
-               myWindow.idsToAttach.push(respObj[i].aid);            
+               myWindow.idsToAttach.push(respObj[i].aid);
                var attachment_list = myWindow.idsToAttach.join(",");
-   
-   
+
+
               var cc = AjxDispatcher.run("GetComposeController");
               var htmlCompose = appCtxt.get(ZmSetting.COMPOSE_AS_FORMAT) === ZmSetting.COMPOSE_HTML;
-              var extraBodyText = [];      
-   
+              var extraBodyText = [];
+
               cc._setView({
                  action: ZmOperation.NEW_MESSAGE,
                  inNewWindow: false,
@@ -231,13 +231,13 @@ SA_AlertZimlet.prototype.notifyAttach = function (id) {
               cc.sendMsg([].concat(attachment_list).join(","));
             }
          }
-      }      
+      }
       req.send(xmlHttp.responseText);
    }
 };
 
 /* This is here for debugging string at binary level
- * 
+ *
  * */
 SA_AlertZimlet.prototype.convert = function(input) {
    var output = "";
