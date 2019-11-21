@@ -89,7 +89,10 @@ SA_AlertZimlet.prototype.onMsgView = function (msg, oldMsg, view) {
       var zimletInstance = appCtxt._zimletMgr.getZimletByName('tk_barrydegraaff_sa_alert').handlerObject;   
       var alertmail = zimletInstance._zimletContext.getConfig("alertmail"); 
       var ignorelistReplyTo = zimletInstance._zimletContext.getConfig("ignorelistReplyTo");
-      ignorelistReplyTo = ignorelistReplyTo.split(";");
+      if (!(!ignorelistReplyTo || ignorelistReplyTo.length === 0))
+      {
+         ignorelistReplyTo = ignorelistReplyTo.split(";");
+      }
 
       var ignorelistReturnPath = zimletInstance._zimletContext.getConfig("ignorelistReturnPath");
       ignorelistReturnPath = ignorelistReturnPath.split(";");
@@ -105,12 +108,15 @@ SA_AlertZimlet.prototype.onMsgView = function (msg, oldMsg, view) {
       )
       {
          var ignoreThis = false;
-         ignorelistReplyTo.forEach(function(ignore) {
-            if((msg.attrs['Reply-To'].indexOf(ignore) > -1) && (ignore.length > 0))
-            {
-               ignoreThis = true;
-            }   
-         });
+         if (!(!ignorelistReplyTo || ignorelistReplyTo.length === 0))
+         {
+            ignorelistReplyTo.forEach(function(ignore) {
+                if((msg.attrs['Reply-To'].indexOf(ignore) > -1) && (ignore.length > 0))
+                {
+                    ignoreThis = true;
+                }
+            });
+         }
 
          ignorelistReturnPath.forEach(function(ignore) {
             if((msg.attrs['Return-Path'].indexOf(ignore) > -1) && (ignore.length > 0))
