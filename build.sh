@@ -1,5 +1,5 @@
 #!/bin/bash
-ZIMLET_NAME="tk_barrydegraaff_sa"
+ZIMLET_NAME="tk_barrydegraaff_sa_alert"
 cd "${ZIMLET_NAME}"
 zip -r ../${ZIMLET_NAME}.zip *
 cd ..

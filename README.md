@@ -21,7 +21,7 @@ The recommended method is to deploy using git.
 # ./build.sh
 ```
 
-Now we can deploy the generated tk_barrydegraaff_sa.zip as any other zimlet.
+Now we can deploy the generated tk_barrydegraaff_sa_alert.zip as any other zimlet.
 
 Otherwise you can fetch an already built zip file from our [spoofing-and-phishing-alert-zimlet releases](https://github.com/btactic/spoofing-and-phishing-alert-zimlet/releases).
 
