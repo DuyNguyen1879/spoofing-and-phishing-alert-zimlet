@@ -106,8 +106,12 @@ SA_AlertZimlet.prototype.onMsgView = function (msg, oldMsg, view) {
          alertedIds = "";
       }
 
-      if((msg.attrs['X-Spam-Status'].indexOf('URI_PHISH') > 0) || (msg.attrs['X-Spam-Status'].indexOf('FREEMAIL_FORGED_REPLYTO') > 0) ||
-      (msg.attrs['From'].indexOf('=0D') > -1) || (msg.attrs['From'].indexOf('=0A') > -1) || ((msg.attrs['From'].indexOf('=00') > -1)) //mailsploit
+      if(
+          (msg.attrs['X-Spam-Status'].indexOf('URI_PHISH') > 0) ||
+          (msg.attrs['X-Spam-Status'].indexOf('FREEMAIL_FORGED_REPLYTO') > 0) ||
+          (msg.attrs['From'].indexOf('=0D') > -1) ||
+          (msg.attrs['From'].indexOf('=0A') > -1) ||
+          ((msg.attrs['From'].indexOf('=00') > -1)) //mailsploit
       )
       {
          var ignoreThis = false;
