@@ -111,7 +111,8 @@ SA_AlertZimlet.prototype.onMsgView = function (msg, oldMsg, view) {
           (msg.attrs['X-Spam-Status'].indexOf('FREEMAIL_FORGED_REPLYTO') > 0) ||
           (msg.attrs['From'].indexOf('=0D') > -1) ||
           (msg.attrs['From'].indexOf('=0A') > -1) ||
-          ((msg.attrs['From'].indexOf('=00') > -1)) //mailsploit
+          ((msg.attrs['From'].indexOf('=00') > -1)) || //mailsploit
+          (msg.attrs['X-Spam-Status'].indexOf('FROMNAME_SPOOF') > 0)
       )
       {
          var ignoreThis = false;
