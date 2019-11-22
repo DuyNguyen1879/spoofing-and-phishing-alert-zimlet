@@ -1,4 +1,4 @@
-<zimlet name="tk_barrydegraaff_sa_alert" version="0.7" label="Spoofing and Phishing Alert" description="Helps you to identify spoofing/phishing and offer protection against it" target="main view-window">
+<zimlet name="tk_barrydegraaff_sa_alert" version="0.8" label="Spoofing and Phishing Alert" description="Helps you to identify spoofing/phishing and offer protection against it" target="main view-window">
 	<include>tk_barrydegraaff_sa_alert.js</include>
 	<handlerObject>tk_barrydegraaff_sa_alert_HandlerObject</handlerObject>
    <userProperties>

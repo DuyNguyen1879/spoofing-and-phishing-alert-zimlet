@@ -45,17 +45,17 @@ function() {
       {
          var soapDoc = AjxSoapDoc.create("ModifyPrefsRequest", "urn:zimbraAccount");
          var zimbraPrefShortEmailAddressNode;
-   
+
          zimbraPrefShortEmailAddressNode = soapDoc.set("pref", "FALSE");
          zimbraPrefShortEmailAddressNode.setAttribute("name", "zimbraPrefShortEmailAddress");
-            
+
          appCtxt.getAppController().sendRequest({
             soapDoc: soapDoc,
             asyncMode: true
          });
          console.log('Sa-Alert-Zimlet: Altered setting zimbraPrefShortEmailAddress, works from next reload of the browser');
       }
-   } 
+   }
    catch (err) 
    {
       console.log('Sa-Alert-Zimlet: Altered setting zimbraPrefShortEmailAddress FAILED' + err);
@@ -83,16 +83,22 @@ SA_AlertZimlet.prototype.convert = function(input) {
   return output;
 };
 
-SA_AlertZimlet.prototype.onMsgView = function (msg, oldMsg, view) {  
+SA_AlertZimlet.prototype.onMsgView = function (msg, oldMsg, view) {
    try
    {
       var zimletInstance = appCtxt._zimletMgr.getZimletByName('tk_barrydegraaff_sa_alert').handlerObject;   
       var alertmail = zimletInstance._zimletContext.getConfig("alertmail"); 
       var ignorelistReplyTo = zimletInstance._zimletContext.getConfig("ignorelistReplyTo");
-      ignorelistReplyTo = ignorelistReplyTo.split(";");
+      if (!(!ignorelistReplyTo || ignorelistReplyTo.length === 0))
+      {
+         ignorelistReplyTo = ignorelistReplyTo.split(";");
+      }
 
       var ignorelistReturnPath = zimletInstance._zimletContext.getConfig("ignorelistReturnPath");
-      ignorelistReturnPath = ignorelistReturnPath.split(";");
+      if (!(!ignorelistReturnPath || ignorelistReturnPath.length === 0))
+      {
+         ignorelistReturnPath = ignorelistReturnPath.split(";");
+      }
 
       var alertedIds = zimletInstance.getUserProperty("alertedIds");
       if(!alertedIds)
@@ -100,57 +106,95 @@ SA_AlertZimlet.prototype.onMsgView = function (msg, oldMsg, view) {
          alertedIds = "";
       }
 
-      if((msg.attrs['X-Spam-Status'].indexOf('URI_PHISH') > 0) || (msg.attrs['X-Spam-Status'].indexOf('FREEMAIL_FORGED_REPLYTO') > 0) ||
-      (msg.attrs['From'].indexOf('=0D') > -1) || (msg.attrs['From'].indexOf('=0A') > -1) || ((msg.attrs['From'].indexOf('=00') > -1)) //mailsploit
+      if(
+          (msg.attrs['X-Spam-Status'].indexOf('URI_PHISH') > 0) ||
+          (msg.attrs['X-Spam-Status'].indexOf('FREEMAIL_FORGED_REPLYTO') > 0) ||
+          (msg.attrs['From'].indexOf('=0D') > -1) ||
+          (msg.attrs['From'].indexOf('=0A') > -1) ||
+          ((msg.attrs['From'].indexOf('=00') > -1)) || //mailsploit
+          (msg.attrs['X-Spam-Status'].indexOf('FROMNAME_SPOOF') > 0)
       )
       {
          var ignoreThis = false;
-         ignorelistReplyTo.forEach(function(ignore) {
-            if((msg.attrs['Reply-To'].indexOf(ignore) > -1) && (ignore.length > 0))
-            {
-               ignoreThis = true;
-            }   
-         });
+         if (!(!ignorelistReplyTo || ignorelistReplyTo.length === 0))
+         {
+            ignorelistReplyTo.forEach(function(ignore) {
+                if((msg.attrs['Reply-To'].indexOf(ignore) > -1) && (ignore.length > 0))
+                {
+                    ignoreThis = true;
+                }
+            });
+         }
 
-         ignorelistReturnPath.forEach(function(ignore) {
-            if((msg.attrs['Return-Path'].indexOf(ignore) > -1) && (ignore.length > 0))
-            {
-               ignoreThis = true;
-            }   
-         });
-         
+         if (!(!ignorelistReturnPath || ignorelistReturnPath.length === 0))
+         {
+            ignorelistReturnPath.forEach(function(ignore) {
+                if((msg.attrs['Return-Path'].indexOf(ignore) > -1) && (ignore.length > 0))
+                {
+                ignoreThis = true;
+                }
+            });
+         }
+
          if(ignoreThis)
          {
             return;
          }
-         
-         SA_AlertZimlet.prototype._dialog = new ZmDialog( { title:'Spoofing and Phishing alert', parent:this.getShell(), standardButtons:[DwtDialog.OK_BUTTON], disposeOnPopDown:true } );
+
          var alertmailTxt = "";
          if((alertmail) && (alertedIds.indexOf(","+msg.id))<0)
          {
-            alertmailTxt = "The message is automatically forwarded to: " + alertmail;
+            alertmailTxt = this.getMessage("saAlert_message_forwarded_to") + " " + alertmail;
          }
-         SA_AlertZimlet.prototype._dialog.setContent('<b>Based on the headers of this email, there is a chance this is a phishing or spoofed mail.<br>Do not click on any links in the mail and do not respond and foward it.</b><br><br>Please mark the message as spam.<br>' + alertmailTxt);
-         SA_AlertZimlet.prototype._dialog.popup();
+         infoPane = new DwtComposite({
+                 parent: view
+         });
+         infoPaneLabel = new DwtLabel({
+            parent: infoPane,
+            style: DwtLabel.IMAGE_LEFT | DwtLabel.ALIGN_LEFT
+         });
+         infoPaneLabel.addClassName("InfoBox");
+         infoPaneLabel.setSize(Dwt.DEFAULT,"16em");
+         infoPaneLabel.setText('<div style="height:16em;background-color:yellow;border-style:solid;border-color:red;"><br/>' +
+         '<div style="text-align:center;font-size:15px;">' + '<b>' + this.getMessage("saAlert_popup_title") + '</div>' +
+         '<div style="font-size:1px;"><br /></div>' +
+         '<div style="text-align:center;font-size:14px;">' + '<b>' + this.getMessage("saAlert_phishing_chance") + '</div>' +
+         '<div style="font-size:1px;"><br /></div>' +
+         '<ul style="font-size:12px;">' +
+         '<li>' + this.getMessage("saAlert_not_links") + '</li>' +
+         '<li>' + this.getMessage("saAlert_not_download") + '</li>' +
+         '<li>' + this.getMessage("saAlert_not_open") + '</li>' +
+         '<li>' + this.getMessage("saAlert_not_reply") + '</li>' +
+         '<li>' + this.getMessage("saAlert_not_forward") + '</li>' +
+         '</ul>' +
+         '</b>' +
+         '<div style="font-size:1px;"><br /></div>' +
+         '<div style="text-align:center;font-size:12px;">' + this.getMessage("saAlert_mark_as_spam")+ '.' +
+         '<div style="font-size:1px;"><br /></div>' +
+         alertmailTxt + '</div><br/></div>');
+         infoPane.addChild(infoPaneLabel);
+
+         el = view.getHtmlElement();
+         el.insertBefore(infoPane.getHtmlElement(), el.firstChild);
          if((alertmail) && (alertedIds.indexOf(","+msg.id))<0)
          {
             SA_AlertZimlet.prototype.notifyAttach(msg.id);
-            alertedIds[msg.id] = msg.id;   
+            alertedIds[msg.id] = msg.id;
             zimletInstance.setUserProperty("alertedIds", alertedIds +","+msg.id, true);
          }
       }
    } catch (err)
    {
-     // X-Spam-Status header not found  
+     // X-Spam-Status header not found
    }
-};   
+};
 
 /** Send this message to the configured helpdesk for analysis
  * */
-SA_AlertZimlet.prototype.notifyAttach = function (id) { 
+SA_AlertZimlet.prototype.notifyAttach = function (id) {
    var zimletInstance = appCtxt._zimletMgr.getZimletByName('tk_barrydegraaff_sa_alert').handlerObject;
    var alertmail = zimletInstance._zimletContext.getConfig("alertmail");
-   
+
    if(alertmail)
    {
       var url = [];
@@ -169,27 +213,27 @@ SA_AlertZimlet.prototype.notifyAttach = function (id) {
       url[i++]= AjxStringUtil.urlComponentEncode(appCtxt.getActiveAccount().name);
       url[i++] = "/message.txt?fmt=txt"+"&id=";
       url[i++] = id;
-      
-      var getUrl = url.join(""); 
-      
+
+      var getUrl = url.join("");
+
       //Now make an ajax request and read the contents of this mail, including all attachments as text
       //it should be base64 encoded
-      var xmlHttp = null;   
+      var xmlHttp = null;
       xmlHttp = new XMLHttpRequest();
       xmlHttp.open( "GET", getUrl, false );
       xmlHttp.send( null );
-   
-      //Check for duplicate filename   
+
+      //Check for duplicate filename
       var composeView = appCtxt.getCurrentView();
-      
+
       req = new XMLHttpRequest();
-      req.open("POST", "/service/upload?fmt=extended,raw", true);        
+      req.open("POST", "/service/upload?fmt=extended,raw", true);
       req.setRequestHeader("Cache-Control", "no-cache");
       req.setRequestHeader("X-Requested-With", "XMLHttpRequest");
       req.setRequestHeader("Content-Type",  "text/plain" + ";");
       req.setRequestHeader("X-Zimbra-Csrf-Token", window.csrfToken);
       req.setRequestHeader("Content-Disposition", 'attachment; filename="message.eml"');
-   
+
       var myWindow = this;
       myWindow.idsToAttach = [];
       req.onload = function(e)
@@ -197,17 +241,17 @@ SA_AlertZimlet.prototype.notifyAttach = function (id) {
          var resp = eval("["+req.responseText+"]");
          var respObj = resp[2];
          var attId = "";
-         for (var i = 0; i < respObj.length; i++) 
+         for (var i = 0; i < respObj.length; i++)
          {
             if(respObj[i].aid != "undefined") {
-               myWindow.idsToAttach.push(respObj[i].aid);            
+               myWindow.idsToAttach.push(respObj[i].aid);
                var attachment_list = myWindow.idsToAttach.join(",");
-   
-   
+
+
               var cc = AjxDispatcher.run("GetComposeController");
               var htmlCompose = appCtxt.get(ZmSetting.COMPOSE_AS_FORMAT) === ZmSetting.COMPOSE_HTML;
-              var extraBodyText = [];      
-   
+              var extraBodyText = [];
+
               cc._setView({
                  action: ZmOperation.NEW_MESSAGE,
                  inNewWindow: false,
@@ -219,13 +263,13 @@ SA_AlertZimlet.prototype.notifyAttach = function (id) {
               cc.sendMsg([].concat(attachment_list).join(","));
             }
          }
-      }      
+      }
       req.send(xmlHttp.responseText);
    }
 };
 
 /* This is here for debugging string at binary level
- * 
+ *
  * */
 SA_AlertZimlet.prototype.convert = function(input) {
    var output = "";
