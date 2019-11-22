@@ -47,6 +47,9 @@ You can set trusted reply-to's by adding a semi-colon separated list in `ignorel
 You can set trusted reply-to's by adding a semi-colon separated list in `ignorelistReturnPath`
 
 # Do a learning period
-Usually you will find your users will trigger some false-positives from services that do not use email properly. You may want to deploy this zimlet in development mode for a week or 3 so you can configure the above `ignore` lists on the fly. To deploy in development mode, unzip the contents of the zip to /opt/zimbra/zimlets-deployed/_dev/tk_barrydegraaff_sa_alert
-
-
+Usually you will find your users will trigger some false-positives from services that do not use email properly.
+You can configure the above `ignore` lists on the fly by editing config_template.xml on /opt/zimbra/zimlets-deployed/tk_barrydegraaff_sa_alert and applying the changes by issuing:
+```
+zmprov flushCache zimlet
+```
+.
