@@ -154,20 +154,24 @@ SA_AlertZimlet.prototype.onMsgView = function (msg, oldMsg, view) {
             style: DwtLabel.IMAGE_LEFT | DwtLabel.ALIGN_LEFT
          });
          infoPaneLabel.addClassName("InfoBox");
-         infoPaneLabel.setSize(Dwt.DEFAULT,"30em");
-         infoPaneLabel.setText('<div style="height:30em;background-color:yellow;border-style:solid;border-color:red;"><br/>' +
-         '<p style="text-align:center;font-size:18px;">' + '<b>' + this.getMessage("saAlert_popup_title") + '</p>' +
-         '<br/>' +
-         '<p style="text-align:center;font-size:18px;">' + '<b>' + this.getMessage("saAlert_phishing_chance") + '</p>' +
-         '<br/>' +
-         '<ul style="font-size:14px;">' +
+         infoPaneLabel.setSize(Dwt.DEFAULT,"16em");
+         infoPaneLabel.setText('<div style="height:16em;background-color:yellow;border-style:solid;border-color:red;"><br/>' +
+         '<div style="text-align:center;font-size:15px;">' + '<b>' + this.getMessage("saAlert_popup_title") + '</div>' +
+         '<div style="font-size:1px;"><br /></div>' +
+         '<div style="text-align:center;font-size:14px;">' + '<b>' + this.getMessage("saAlert_phishing_chance") + '</div>' +
+         '<div style="font-size:1px;"><br /></div>' +
+         '<ul style="font-size:12px;">' +
          '<li>' + this.getMessage("saAlert_not_links") + '</li>' +
          '<li>' + this.getMessage("saAlert_not_download") + '</li>' +
          '<li>' + this.getMessage("saAlert_not_open") + '</li>' +
          '<li>' + this.getMessage("saAlert_not_reply") + '</li>' +
          '<li>' + this.getMessage("saAlert_not_forward") + '</li>' +
          '</ul>' +
-         '</b>' + '<br>'+ '<p style="text-align:center;font-size:14px;">' + this.getMessage("saAlert_mark_as_spam")+'.<br>' + alertmailTxt + '</p><br/></div>');
+         '</b>' +
+         '<div style="font-size:1px;"><br /></div>' +
+         '<div style="text-align:center;font-size:12px;">' + this.getMessage("saAlert_mark_as_spam")+ '.' +
+         '<div style="font-size:1px;"><br /></div>' +
+         alertmailTxt + '</div><br/></div>');
          infoPane.addChild(infoPaneLabel);
 
          el = view.getHtmlElement();
