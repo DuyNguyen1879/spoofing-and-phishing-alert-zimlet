@@ -23,7 +23,6 @@ The recommended method is to deploy using git.
 
 Now we can deploy the generated tk_barrydegraaff_sa_alert.zip as any other zimlet.
 
-Otherwise you can fetch an already built zip file from our [spoofing-and-phishing-alert-zimlet releases](https://github.com/Zimbra-Community/spoofing-and-phishing-alert-zimlet/releases).
 
 Please check the *Do a learning period* section below too for a development deploy mode.
 
